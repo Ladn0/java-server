@@ -8,8 +8,8 @@ import java.nio.charset.StandardCharsets;
 public class HttpParser {
 
     private static final int SP = 0x20;
-    private static final int CR = 0x8D;
-    private static final int LF = 0x8A;
+    private static final int CR = 0x0D;
+    private static final int LF = 0x0A;
 
     public HttpRequest parseHttpRequest(InputStream inputStream) throws IOException {
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.US_ASCII);
@@ -29,22 +29,19 @@ public class HttpParser {
         while ((_byte = streamReader.read()) >= 0){
             if(_byte == CR){
                 if ((_byte = streamReader.read()) == LF){
+                    httpRequest.setHttpVersion(sb.toString());
                     return;
                 }
             }
             if(_byte == SP){
                 if (!methodParsed){
                     httpRequest.setMethod(sb.toString());
-                    sb.delete(0, sb.length());
                     methodParsed = true;
                 }else if(!targetParsed){
                     httpRequest.setRequestTarget(sb.toString());
-                    sb.delete(0, sb.length());
                     targetParsed = true;
-                }else{
-                    httpRequest.setHttpVersion(sb.toString());
-                    return;
                 }
+                sb.delete(0, sb.length());
             }else{
                 sb.append((char) _byte);
             }

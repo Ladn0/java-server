@@ -26,6 +26,8 @@ class HttpParserTest {
         HttpRequest httpRequest = httpParser.parseHttpRequest(generateValidGetTestCase());
 
         assertEquals("GET", httpRequest.getMethod());
+        assertEquals("/", httpRequest.getRequestTarget());
+        assertEquals("HTTP/1.1", httpRequest.getHttpVersion());
     }
 
     private InputStream generateValidGetTestCase(){
