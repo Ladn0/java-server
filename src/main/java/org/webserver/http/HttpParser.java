@@ -11,15 +11,19 @@ public class HttpParser {
     private static final int CR = 0x0D;
     private static final int LF = 0x0A;
 
-    public HttpRequest parseHttpRequest(InputStream inputStream) throws IOException {
+    public HttpRequest parseHttpRequest(InputStream inputStream) throws  HttpParsingException {
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.US_ASCII);
         HttpRequest httpRequest = new HttpRequest();
 
-        parseRequestLine(inputStreamReader, httpRequest);
+        try {
+            parseRequestLine(inputStreamReader, httpRequest);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return httpRequest;
     }
 
-    private void parseRequestLine(InputStreamReader streamReader, HttpRequest httpRequest) throws IOException {
+    private void parseRequestLine(InputStreamReader streamReader, HttpRequest httpRequest) throws IOException, HttpParsingException {
         StringBuilder sb = new StringBuilder();
 
         boolean methodParsed = false;

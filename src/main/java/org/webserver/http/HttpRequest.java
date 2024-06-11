@@ -1,25 +1,29 @@
 package org.webserver.http;
 
+import java.util.Objects;
+
 public class HttpRequest {
-    private String method;
+    private HttpMethod method;
     private String requestTarget;
     private String httpVersion;
 
     public HttpRequest() {
     }
 
-    public HttpRequest(String method, String requestTarget, String httpVersion) {
-        this.method = method;
-        this.requestTarget = requestTarget;
-        this.httpVersion = httpVersion;
-    }
-
-    public String getMethod() {
+    public HttpMethod getMethod() {
         return method;
     }
 
-    public void setMethod(String method) {
-        this.method = method;
+    public void setMethod(String method) throws HttpParsingException {
+        for(HttpMethod httpMethod : HttpMethod.values()){
+                if (method.equals(httpMethod.name())){
+                    this.method = httpMethod;
+                    return;
+                }
+        }
+        throw new HttpParsingException(
+                HttpStatusCode.SERVER_ERROR_501_NOT_IMPLEMENTED
+        );
     }
 
     public String getRequestTarget() {
